@@ -8,12 +8,35 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const isValidPassword = (password: string) => {
+    return /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!%*#?&@])[A-Za-z\d!%*#?&@]{8,}$/.test(password);
+  };
+
   const handleSignup = async () => {
+    if (!isValidEmail(username)) {
+      setMessage("이메일 형식이 올바르지 않습니다.");
+      return;
+    }
+
+    if (name.length < 2) {
+      setMessage("이름은 최소 2자 이상이어야 합니다.");
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setMessage("비밀번호는 8자 이상, 숫자, 영문자, 특수문자를 포함해야 합니다.");
+      return;
+    }
+
     try {
       await signup(username, name, password);
       setMessage("회원가입 성공!");
     } catch (error) {
-       setMessage("회원가입 실패");
+      setMessage("회원가입 실패");
     }
   };
 
