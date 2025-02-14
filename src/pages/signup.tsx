@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { signup } from "../api/api";
+import { signup } from "../api/auth";
 import { Container, Input, Button, Message } from "../styles/styles";
 
 const Signup: React.FC = () => {
@@ -35,6 +35,7 @@ const Signup: React.FC = () => {
     try {
       await signup(username, name, password);
       setMessage("회원가입 성공!");
+      localStorage.setItem(`name-${username}`, name);
     } catch (error) {
       setMessage("회원가입 실패");
     }
