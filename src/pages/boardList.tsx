@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const BoardList: React.FC = () => {
-  const [boards, setBoards] = useState<{ id: number; title: string; boardCategory: string; createdAt: string }[]>([]);
+  const [boards, setBoards] = useState<{ id: number; title: string; category: string; createdAt: string }[]>([]);
   const [categories, setCategories] = useState<Record<string, string>>({});
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -35,7 +35,10 @@ const BoardList: React.FC = () => {
 
   return (
     <Container>
-      <h2>게시판</h2>
+      <Header>
+        <h2>게시판</h2>
+        <CreateButton onClick={() => navigate("/create")}>글 작성</CreateButton>
+      </Header>
       <Table>
         <thead>
           <tr>
@@ -46,11 +49,11 @@ const BoardList: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {boards.map(({ id, title, boardCategory, createdAt }) => (
+          {boards.map(({ id, title, category, createdAt }) => (
             <tr key={id} onClick={() => navigate(`/board/${id}`)}>
               <td>{id}</td>
               <td>{title}</td>
-              <td>{categories[boardCategory] || boardCategory}</td>
+              <td>{categories[category] ?? category}</td>
               <td>{new Date(createdAt).toLocaleDateString()}</td>
             </tr>
           ))}
@@ -69,6 +72,13 @@ export default BoardList;
 
 const Container = styled.div`
   padding: 20px;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 `;
 
 const Table = styled.table`
@@ -106,5 +116,18 @@ const Pagination = styled.div`
       background-color: #ccc;
       cursor: not-allowed;
     }
+  }
+`;
+
+const CreateButton = styled.button`
+  padding: 10px 15px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #218838;
   }
 `;

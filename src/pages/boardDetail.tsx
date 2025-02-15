@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getBoardDetail, deleteBoard } from "../api/board";
+import { getBoardDetail, deleteBoard, getBoardCategories } from "../api/board";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -7,11 +7,17 @@ const BoardDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [board, setBoard] = useState<{ title: string; content: string; boardCategory: string; imageUrl?: string; createdAt: string } | null>(null);
+  const [categories, setCategories] = useState<Record<string, string>>({});
 
   useEffect(() => {
     (async () => {
       try {
-        setBoard(await getBoardDetail(Number(id)));
+        const [boardData, categories] = await Promise.all([
+          getBoardDetail(Number(id)),
+          getBoardCategories(),
+        ]);
+        setBoard(boardData);
+        setCategories(categories);
       } catch {
         alert("게시글 조회 실패");
       }
@@ -34,7 +40,7 @@ const BoardDetail: React.FC = () => {
   return (
     <Container>
       <Title>{board.title}</Title>
-      <Category>카테고리: {board.boardCategory || "없음"}</Category>
+      <Category>카테고리: {categories[board.boardCategory] ?? board.boardCategory}</Category>
       <CreatedDate>작성일: {new Date(board.createdAt).toLocaleDateString()}</CreatedDate>
       {board.imageUrl && <Image src={`https://front-mission.bigs.or.kr${board.imageUrl}`} alt="게시글 이미지" />}
       <Content>{board.content}</Content>
