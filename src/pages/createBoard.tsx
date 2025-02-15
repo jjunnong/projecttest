@@ -1,27 +1,40 @@
-import React, { useState } from "react";
-import { createBoard } from "../api/board";
+import React, { useEffect, useState } from "react";
+import { createBoard, getBoardCategories } from "../api/board";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const CreateBoard: React.FC = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("NOTICE");
+  const [form, setForm] = useState({ title: "", content: "", category: "" });
+  const [categories, setCategories] = useState<[string, string][]>([]);
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getBoardCategories();
+        const categoryEntries = Object.entries(data) as [string, string][];
+        setCategories(categoryEntries);
+        setForm((prev) => ({ ...prev, category: categoryEntries[0]?.[0] || "" }));
+      } catch {
+        alert("카테고리를 불러올 수 없습니다.");
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   const handleSubmit = async () => {
-    if (!title || !content) {
-      alert("제목과 내용을 입력하세요");
-      return;
-    }
+    if (!form.title || !form.content) return alert("제목과 내용을 입력하세요");
 
     try {
-      await createBoard(title, content, category, file || undefined);
-      alert("게시글 등록");
+      await createBoard(form.title, form.content, form.category, file || undefined);
+      alert("게시글 등록 완료");
       navigate("/");
-    } catch (error) {
-      console.error("게시글 등록 실패:", error);
+    } catch {
       alert("게시글 등록 실패");
     }
   };
@@ -30,18 +43,21 @@ const CreateBoard: React.FC = () => {
     <Container>
       <h2>게시글 작성</h2>
       <Label>카테고리</Label>
-      <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-        <option value="NOTICE">공지</option>
-        <option value="FREE">자유</option>
-        <option value="QNA">Q&A</option>
-        <option value="ETC">기타</option>
+      <Select name="category" value={form.category} onChange={handleChange}>
+        {categories.length > 0 ? (
+          categories.map(([key, value]) => (
+            <option key={key} value={key}>{value}</option>
+          ))
+        ) : (
+          <option>카테고리 없음</option>
+        )}
       </Select>
       <Label>제목</Label>
-      <Input placeholder="제목" value={title} onChange={(e) => setTitle(e.target.value)} />
+      <Input name="title" placeholder="제목" value={form.title} onChange={handleChange} />
       <Label>내용</Label>
-      <Textarea placeholder="내용" value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea name="content" placeholder="내용" value={form.content} onChange={handleChange} />
       <Label>파일 업로드</Label>
-      <Input type="file" onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)} />
+      <Input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
       <Button onClick={handleSubmit}>등록</Button>
     </Container>
   );
