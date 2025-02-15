@@ -32,10 +32,10 @@ const Login: React.FC = () => {
         setMessage("로그인 성공");
         navigate("/");
       } else {
-        setMessage("로그인 실패: 응답 데이터를 확인하세요");
+        setMessage("로그인 실패");
       }
     } catch (error) {
-      setMessage("로그인 실패: 아이디 또는 비밀번호를 확인하세요");
+      setMessage("로그인 실패: 이메일 또는 비밀번호를 확인하세요");
     }
   };
 
