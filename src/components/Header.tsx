@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Header: React.FC = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -15,6 +16,7 @@ const Header: React.FC = () => {
 
     const handleStorageChange = () => {
       setUsername(localStorage.getItem("username"));
+      setName(localStorage.getItem("name"));
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -24,12 +26,24 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("name");
+    setUsername(null);
+    setName(null);
+    navigate("/login");
+  };
+
   return (
     <HeaderContainer>
       <h1>채용 과제</h1>
       <Nav>
         {username ? (
-          <UserInfo> {name} {username}</UserInfo>
+          <>
+            <UserInfo>{name} ({username})</UserInfo>
+            <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+          </>
         ) : (
           <AuthLinks>
             <StyledLink to="/signup">회원가입</StyledLink>
@@ -78,4 +92,16 @@ const UserInfo = styled.div`
   font-size: 16px;
   font-weight: bold;
   color: #f0f0f0;
+  margin-right: 15px;
+`;
+
+const LogoutButton = styled.button`
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `;

@@ -18,23 +18,23 @@ const Signup: React.FC = () => {
 
   const handleSignup = async () => {
     if (!isValidEmail(username)) {
-      setMessage("이메일 형식이 올바르지 않습니다.");
+      setMessage("이메일 형식이 올바르지 않습니다");
       return;
     }
 
     if (name.length < 2) {
-      setMessage("이름은 최소 2자 이상이어야 합니다.");
+      setMessage("이름은 최소 2자 이상이어야 합니다");
       return;
     }
 
     if (!isValidPassword(password)) {
-      setMessage("비밀번호는 8자 이상, 숫자, 영문자, 특수문자를 포함해야 합니다.");
+      setMessage("비밀번호는 8자 이상, 숫자, 영문자, 특수문자를 포함해야 합니다");
       return;
     }
 
     try {
       await signup(username, name, password);
-      setMessage("회원가입 성공!");
+      setMessage("회원가입 성공");
       localStorage.setItem(`name-${username}`, name);
     } catch (error) {
       setMessage("회원가입 실패");
