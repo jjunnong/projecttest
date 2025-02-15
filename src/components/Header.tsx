@@ -37,7 +37,7 @@ const Header: React.FC = () => {
 
   return (
     <HeaderContainer>
-      <h1>채용 과제</h1>
+      <h1 onClick={() => navigate("/")}>채용 과제</h1>
       <Nav>
         {username ? (
           <>

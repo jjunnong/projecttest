@@ -20,15 +20,34 @@ export const refreshAccessToken = async () => {
 };
 
 const getAuthHeader = async () => {
-  const token = localStorage.getItem("accessToken") || (await refreshAccessToken());
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  let token = localStorage.getItem("accessToken") || (await refreshAccessToken());
+  if (!token) {
+    alert("로그인이 필요합니다");
+    window.location.href = "/login";
+    throw new Error("로그인이 필요합니다");
+  }
+  return { Authorization: `Bearer ${token}` };
 };
 
 export const getBoardList = async (page: number, size: number) => {
-  const headers = await getAuthHeader();
-  const response = await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, { headers });
-  return response.data;
+  try {
+    const headers = await getAuthHeader();
+    return (await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, { headers })).data;
+  } catch (error: any) {
+    if (error.response?.status === 401) {
+      console.warn("토큰 재요청");
+      const newToken = await refreshAccessToken();
+      if (!newToken) {
+        alert("로그인이 필요합니다");
+        window.location.href = "/login";
+        throw new Error("로그인이 필요합니다");
+      }
+      return (await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, { headers: { Authorization: `Bearer ${newToken}` } })).data;
+    }
+    throw error;
+  }
 };
+
 
 export const getBoardDetail = async (id: number) => {
   const headers = await getAuthHeader();
