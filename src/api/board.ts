@@ -20,48 +20,35 @@ export const refreshAccessToken = async () => {
 };
 
 const getAuthHeader = async () => {
-  let token = localStorage.getItem("accessToken");
-
-  if (!token) {
-    token = await refreshAccessToken();
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      window.location.href = "/login";
-      throw new Error("로그인이 필요합니다.");
-    }
-  }
-
-  return { Authorization: `Bearer ${token}` };
+  const token = localStorage.getItem("accessToken") || (await refreshAccessToken());
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 export const getBoardList = async (page: number, size: number) => {
-  const response = await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`);
+  const headers = await getAuthHeader();
+  const response = await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, { headers });
   return response.data;
 };
 
 export const getBoardDetail = async (id: number) => {
-  const response = await axios.get(`${API_BASE_URL}/${id}`);
+  const headers = await getAuthHeader();
+  const response = await axios.get(`${API_BASE_URL}/${id}`, { headers });
+  return response.data;
+};
+
+export const getBoardCategories = async () => {
+  const headers = await getAuthHeader();
+  const response = await axios.get(`${API_BASE_URL}/categories`, { headers });
   return response.data;
 };
 
 export const createBoard = async (title: string, content: string, category: string, file?: File) => {
-  const accessToken = localStorage.getItem("accessToken");
-  if (!accessToken) {
-    alert("로그인이 필요합니다.");
-    return;
-  }
-
   const formData = new FormData();
   formData.append("request", new Blob([JSON.stringify({ title, content, category })], { type: "application/json" }));
   if (file) formData.append("file", file);
 
-  const response = await axios.post(API_BASE_URL, formData, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
+  const headers = await getAuthHeader();
+  const response = await axios.post(API_BASE_URL, formData, { headers });
   return response.data;
 };
 
@@ -70,18 +57,12 @@ export const updateBoard = async (id: number, title: string, content: string, ca
   formData.append("request", new Blob([JSON.stringify({ title, content, category })], { type: "application/json" }));
   if (file) formData.append("file", file);
 
-  const response = await axios.patch(`${API_BASE_URL}/${id}`, formData, {
-    headers: {
-      ...(await getAuthHeader()),
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
+  const headers = await getAuthHeader();
+  const response = await axios.patch(`${API_BASE_URL}/${id}`, formData, { headers });
   return response.data;
 };
 
 export const deleteBoard = async (id: number) => {
-  await axios.delete(`${API_BASE_URL}/${id}`, {
-    headers: await getAuthHeader(),
-  });
+  const headers = await getAuthHeader();
+  await axios.delete(`${API_BASE_URL}/${id}`, { headers });
 };
