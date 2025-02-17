@@ -26,7 +26,7 @@ const EditBoard: React.FC = () => {
         setCategory(boardData.boardCategory);
         setCategories(categoryData);
       } catch (error) {
-        alert("게시글 정보를 불러올 수 없습니다.");
+        alert("게시글 정보를 불러올 수 없습니다");
       }
     };
 
@@ -37,10 +37,10 @@ const EditBoard: React.FC = () => {
     e.preventDefault();
     try {
       await updateBoard(Number(id), title, content, category, file);
-      alert("게시글이 수정되었습니다.");
+      alert("게시글이 수정완료");
       navigate(`/board/${id}`);
     } catch (error) {
-      alert("게시글 수정에 실패했습니다.");
+      alert("게시글 수정 실패");
     }
   };
 
