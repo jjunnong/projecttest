@@ -10,7 +10,6 @@ export const refreshAccessToken = async () => {
   try {
     const response = await axios.post(`${AUTH_BASE_URL}/refresh`, { refreshToken });
     const { accessToken, refreshToken: newRefreshToken } = response.data;
-
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", newRefreshToken);
     return accessToken;
@@ -22,32 +21,27 @@ export const refreshAccessToken = async () => {
 const getAuthHeader = async () => {
   let token = localStorage.getItem("accessToken") || (await refreshAccessToken());
   if (!token) {
-    alert("로그인이 필요합니다");
     window.location.href = "/login";
     throw new Error("로그인이 필요합니다");
   }
   return { Authorization: `Bearer ${token}` };
 };
 
-export const getBoardList = async (page: number, size: number) => {
+export const getBoardList = async (page: number, size: number, category?: string, search?: string) => {
   try {
+    const params = new URLSearchParams();
+    params.append("page", page.toString());
+    params.append("size", size.toString());
+
+    if (category) params.append("category", category);
+    if (search) params.append("search", search);
+
     const headers = await getAuthHeader();
-    return (await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, { headers })).data;
+    return (await axios.get(`${API_BASE_URL}?${params.toString()}`, { headers })).data;
   } catch (error: any) {
-    if (error.response?.status === 401) {
-      console.warn("토큰 재요청");
-      const newToken = await refreshAccessToken();
-      if (!newToken) {
-        alert("로그인이 필요합니다");
-        window.location.href = "/login";
-        throw new Error("로그인이 필요합니다");
-      }
-      return (await axios.get(`${API_BASE_URL}?page=${page}&size=${size}`, { headers: { Authorization: `Bearer ${newToken}` } })).data;
-    }
     throw error;
   }
 };
-
 
 export const getBoardDetail = async (id: number) => {
   const headers = await getAuthHeader();

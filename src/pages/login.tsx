@@ -39,6 +39,12 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   return (
     <Container>
       <h2>로그인</h2>
@@ -47,12 +53,14 @@ const Login: React.FC = () => {
         placeholder="이메일"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <Input
         type="password"
         placeholder="비밀번호"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <Button onClick={handleLogin}>로그인</Button>
       {message && <Message>{message}</Message>}

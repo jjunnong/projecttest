@@ -17,7 +17,7 @@ const CreateBoard: React.FC = () => {
         setCategories(categoryEntries);
         setForm((prev) => ({ ...prev, category: categoryEntries[0]?.[0] || "" }));
       } catch {
-        alert("카테고리를 불러올 수 없습니다.");
+        alert("카테고리를 불러올 수 없습니다");
       }
     };
     fetchCategories();
