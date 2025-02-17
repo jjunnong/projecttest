@@ -67,6 +67,13 @@ export default CreateBoard;
 
 const Container = styled.div`
   padding: 20px;
+  max-width: 600px;
+  width: 80%;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
 `;
 
 const Label = styled.label`
@@ -77,27 +84,64 @@ const Label = styled.label`
 `;
 
 const Select = styled.select`
-  width: 100%;
+  width: 103%;
   padding: 10px;
   margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+  }
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+  }
 `;
 
 const Textarea = styled.textarea`
   width: 100%;
   height: 200px;
   padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: 14px;
+    height: 150px;
+  }
 `;
 
 const Button = styled.button`
   margin-top: 10px;
-  padding: 10px;
+  padding: 12px;
   background-color: blue;
   color: white;
   border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 105%;
+
+  &:hover {
+    background-color: darkblue;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 14px;
+  }
 `;
+

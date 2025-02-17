@@ -6,6 +6,7 @@ const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const isValidEmail = (email: string) => {
@@ -17,6 +18,8 @@ const Signup: React.FC = () => {
   };
 
   const handleSignup = async () => {
+    setMessage("");
+
     if (!isValidEmail(username)) {
       setMessage("이메일 형식이 올바르지 않습니다");
       return;
@@ -32,12 +35,21 @@ const Signup: React.FC = () => {
       return;
     }
 
+    if (password !== confirmPassword) {
+      setMessage("비밀번호가 일치하지 않습니다");
+      return;
+    }
+
     try {
       await signup(username, name, password);
       setMessage("회원가입 성공");
       localStorage.setItem(`name-${username}`, name);
-    } catch (error) {
-      setMessage("회원가입 실패");
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        setMessage("이미 사용 중인 이메일입니다");
+      } else {
+        setMessage("회원가입 실패");
+      }
     }
   };
 
@@ -47,10 +59,11 @@ const Signup: React.FC = () => {
       <Input type="email" placeholder="이메일" value={username} onChange={(e) => setUsername(e.target.value)} />
       <Input type="text" placeholder="이름" value={name} onChange={(e) => setName(e.target.value)} />
       <Input type="password" placeholder="비밀번호" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <Input type="password" placeholder="비밀번호 확인" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
       <Button onClick={handleSignup}>가입하기</Button>
       {message && <Message>{message}</Message>}
     </Container>
   );
-};  
+};
 
 export default Signup;

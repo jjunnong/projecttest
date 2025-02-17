@@ -125,7 +125,7 @@ const BoardList: React.FC = () => {
       <Table>
         <thead>
           <tr>
-            <th></th>
+            <th>번호</th>
             <th>제목</th>
             <th>작성자</th>
             <th>작성일</th>
@@ -207,8 +207,16 @@ const BoardList: React.FC = () => {
 export default BoardList;
 
 const Container = styled.div`
-  width: 1100px;
+  max-width: 1100px;
+  width: 100%;
   padding: 20px;
+  margin: 0 auto;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    width: 95%;
+  }
 `;
 
 const Header = styled.div`
@@ -219,7 +227,7 @@ const Header = styled.div`
 `;
 
 const Table = styled.table`
-  width: 1100px;
+  width: 100%;
   border-collapse: collapse;
 
   th, td {
@@ -237,11 +245,7 @@ const Table = styled.table`
     width: 50%;
   }
 
-  th:nth-child(3), td:nth-child(3) {
-    width: 20%;
-    text-align: center;
-  }
-
+  th:nth-child(3), td:nth-child(3),
   th:nth-child(4), td:nth-child(4) {
     width: 20%;
     text-align: center;
@@ -250,6 +254,12 @@ const Table = styled.table`
   tbody tr:hover {
     background-color: #f5f5f5;
     cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 `;
 
@@ -276,26 +286,6 @@ const NoticeTag = styled.span`
   margin: 0 auto;
 `;
 
-const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 5px;
-`;
-
-const PageButton = styled.button<{ $active?: boolean }>`
-  padding: 8px 12px;
-  border: none;
-  background-color: ${({ $active }) => ($active ? "#ddd" : "transparent")};
-  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
-  cursor: pointer;
-  border-radius: 5px;
-  &:hover {
-    background-color: #ddd;
-  }
-`;
-
 const CreateButton = styled.button`
   padding: 10px 15px;
   background-color: #28a745;
@@ -307,38 +297,10 @@ const CreateButton = styled.button`
   }
 `;
 
-const SearchContainer = styled.div`
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  margin-bottom: 15px;
-`;
-
-const SearchInput = styled.input`
-  padding: 8px;
-  width: 200px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
-
-const SearchButton = styled.button`
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
 const CategoryContainer = styled.div`
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 15px;
 `;
@@ -350,7 +312,80 @@ const CategoryButton = styled.button<{ $active: boolean }>`
   color: ${({ $active }) => ($active ? "white" : "#333")};
   cursor: pointer;
   border-radius: 5px;
+
   &:hover {
     background-color: ${({ $active }) => ($active ? "#0056b3" : "#ccc")};
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+`;
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  gap: 5px;
+`;
+
+const PageButton = styled.button<{ $active?: boolean }>`
+  padding: 8px 12px;
+  border: none;
+  background-color: ${({ $active }) => ($active ? "#ddd" : "transparent")};
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
+  cursor: pointer;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #ddd;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+`;
+
+const SearchContainer = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+`;
+
+const SearchInput = styled.input`
+  padding: 8px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+
+  @media (max-width: 768px) {
+    width: 150px;
+    padding: 6px;
+  }
+`;
+
+const SearchButton = styled.button`
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 10px;
   }
 `;
